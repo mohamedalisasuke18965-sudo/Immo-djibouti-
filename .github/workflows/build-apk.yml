@@ -1,0 +1,55 @@
+name: Build Android APK
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Extract Project
+        run: unzip immodjibouti-source.zip -d project_folder
+
+      - name: Install Dependencies
+        run: |
+          cd project_folder
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Build Web Project
+        run: |
+          cd project_folder
+          npm run build --if-present
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Capacitor Sync & Build APK
+        run: |
+          cd project_folder
+          npx cap init ImmoDjibouti com.djibouti.immo --web-dir=dist --copy
+          npx cap add android
+          npx cap sync android
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ImmoDjibouti-APK
+          path: project_folder/android/app/build/outputs/apk/debug/app-debug.apk
