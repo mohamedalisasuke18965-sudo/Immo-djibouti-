@@ -17,12 +17,15 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Extract Project
         run: unzip immodjibouti-source.zip -d project_folder
 
       - name: Build APK
         run: |
-          cd project_folder
+          cd project_folder/android
           chmod +x gradlew
           ./gradlew assembleDebug
 
@@ -30,4 +33,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ImmoDjibouti-APK
-          path: project_folder/app/build/outputs/apk/debug/app-debug.apk
+          path: project_folder/android/app/build/outputs/apk/debug/app-debug.apk
