@@ -46,11 +46,18 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Downgrade Gradle Wrapper & Build APK
+      - name: Force Gradle 8.2 & Build APK
         run: |
           cd project_folder/android
+          
+          # Force la version 8.2 directement dans le fichier de configuration
+          echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
+          echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.2-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
+          echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
+          echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
+          
           chmod +x gradlew
-          ./gradlew wrapper --gradle-version 8.2
           ./gradlew clean
           ./gradlew assembleDebug -Pandroid.experimental.lifecycle.transform=false
           
