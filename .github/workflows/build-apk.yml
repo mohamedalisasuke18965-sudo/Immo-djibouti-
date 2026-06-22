@@ -1,36 +1,20 @@
-name: Build Android APK
+name: Diagnostic Project Structure
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build:
+  diagnose:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Extract Project
         run: unzip immodjibouti-source.zip -d project_folder
 
-      - name: Build APK
+      - name: List All Files
         run: |
-          cd project_folder/android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: ImmoDjibouti-APK
-          path: project_folder/android/app/build/outputs/apk/debug/app-debug.apk
+          echo "--- Contenu du dossier extrait ---"
+          find project_folder -maxdepth 3
