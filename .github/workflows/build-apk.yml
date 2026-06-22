@@ -46,21 +46,12 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Force Gradle 8.2 & Build APK
-        run: |
-          cd project_folder/android
-          
-          # Force la version 8.2 directement dans le fichier de configuration
-          echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
-          echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.2-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
-          echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
-          echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-          
-          chmod +x gradlew
-          ./gradlew clean
-          ./gradlew assembleDebug -Pandroid.experimental.lifecycle.transform=false
-          
+      - name: Setup Gradle & Build APK
+        uses: gradle/gradle-build-action@v3
+        with:
+          build-root-directory: project_folder/android
+          arguments: assembleDebug -Pandroid.experimental.lifecycle.transform=false
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
