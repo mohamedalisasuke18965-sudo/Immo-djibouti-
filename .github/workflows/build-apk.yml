@@ -39,15 +39,19 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Capacitor Sync & Build APK
+      - name: Capacitor Sync
         run: |
           cd project_folder
           npx cap init ImmoDjibouti com.djibouti.immo --web-dir=dist
           npx cap add android
           npx cap sync android
-          npx cap copy android
-          cd android
-          ./gradlew assembleDebug
+
+      - name: Build APK with Gradle
+        run: |
+          cd project_folder/android
+          chmod +x gradlew
+          ./gradlew clean
+          ./gradlew assembleDebug -Xxdoclint:none -Pandroid.experimental.lifecycle.transform=false
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
