@@ -46,13 +46,14 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Build APK with Gradle
+      - name: Downgrade Gradle Wrapper & Build APK
         run: |
           cd project_folder/android
           chmod +x gradlew
+          ./gradlew wrapper --gradle-version 8.2
           ./gradlew clean
-          ./gradlew assembleDebug -Xxdoclint:none -Pandroid.experimental.lifecycle.transform=false
-
+          ./gradlew assembleDebug -Pandroid.experimental.lifecycle.transform=false
+          
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
