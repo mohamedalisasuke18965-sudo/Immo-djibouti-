@@ -42,9 +42,10 @@ jobs:
       - name: Capacitor Sync & Build APK
         run: |
           cd project_folder
-          npx cap init ImmoDjibouti com.djibouti.immo --web-dir=dist --copy
+          npx cap init ImmoDjibouti com.djibouti.immo --web-dir=dist
           npx cap add android
           npx cap sync android
+          npx cap copy android
           cd android
           ./gradlew assembleDebug
 
