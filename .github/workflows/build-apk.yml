@@ -39,7 +39,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Generate Android Project & Force Build
+      - name: Generate Android Project & Build
         run: |
           cd project_folder
           npx cap init ImmoDjibouti com.djibouti.immo --web-dir=dist
@@ -48,9 +48,9 @@ jobs:
           
           cd android
           chmod +x gradlew
-          # Force la compilation en ignorant les erreurs de vérification non critiques (Lint)
-          ./gradlew assembleDebug -x lint -Xxdoclint:none -Pandroid.experimental.lifecycle.transform=false
-
+          # Utilisation de la commande de build standard avec affichage complet des erreurs si échec
+          ./gradlew assembleDebug --stacktrace
+          
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
